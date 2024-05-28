@@ -3,10 +3,12 @@ import React from 'react'
 import Image from 'next/image'
 import bgpick from '@/images/bgpick1.png'
 import bgpick2 from '@/images/bgpick2.png'
-import icon1 from '@/images/icon1.png'
-import icon2 from '@/images/icon2.png'
+import { useRouter } from 'next/router'
 
 const LandingPage = () => {
+
+  const router = useRouter();
+
   return (
     <div className='bg-white min-h-screen text-black relative'>
         <Navbar/>
@@ -16,7 +18,7 @@ const LandingPage = () => {
                 <label className='relative text-7xl font-bold bg-gradient-to-r from-violet-900 via-pink-400 to-purple-400 inline-block text-transparent bg-clip-text'>CoLab</label>
                 <label className='relative text-2xl mt-2 mx-1 font-semibold text-purple-700'>Unite to Debug</label>
                 <label className='relative text-xl mt-4 text-gray-600'>The ultimate platform for developers to join forces to solve code issues in real-time, using a shared code editor and custom virtual meet rooms.</label>
-                <button className='relative mt-8 w-[30%] bg-gradient-to-r from-violet-900 to-purple-500 text-white font-semibold py-2 px-4 rounded-lg shadow-2xl'>Get Started</button>
+                <button onClick={() => router.push('/dashboard')} className='relative mt-8 w-[30%] bg-gradient-to-r from-violet-900 to-purple-500 text-white font-semibold py-2 px-4 rounded-lg shadow-2xl'>Get Started</button>
             </div>
 
             <div className='flex flex-col w-[28%] mr-[10%] relative'>
