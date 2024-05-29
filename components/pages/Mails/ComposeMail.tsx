@@ -1,5 +1,3 @@
-//7946a66c.09067d51fce34114a34bc9bfe2456bb5
-
 import React, { useState } from "react";
 import lighthouse from '@lighthouse-web3/sdk';
 
@@ -19,6 +17,34 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend }) => {
   const [body, setBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [senderAddress, setSenderAddress] = useState<string | null>(null);
+
+  const signAuthMessage = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        })
+        if (accounts.length === 0) {
+          throw new Error("No accounts returned from Wallet.")
+        }
+        const signerAddress = accounts[0]
+        setSenderAddress(signerAddress)
+        const { message } = (await lighthouse.getAuthMessage(signerAddress)).data
+        const signature = await window.ethereum.request({
+          method: "personal_sign",
+          params: [message, signerAddress],
+        })
+        return { signature, signerAddress }
+      } catch (error) {
+        console.error("Error signing message with Wallet", error)
+        return null
+      }
+    } else {
+      console.log("Please install Wallet!")
+      return null
+    }
+  }
 
   const progressCallback = (progressData: { total: number; uploaded: number }) => {
     const percentageDone = 100 - Math.round((progressData.uploaded / progressData.total) * 100);
@@ -27,7 +53,15 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend }) => {
 
   const uploadFile = async (file: File) => {
     try {
-      const output : any = await lighthouse.upload(file, "7946a66c.09067d51fce34114a34bc9bfe2456bb5", true, undefined, progressCallback);
+      const { signature, signerAddress } : any= await signAuthMessage();
+      if (!signature || !signerAddress) {
+        throw new Error("Failed to sign message")
+      }
+      // Upload file to Lighthouse (normal file upload)
+      // const output : any = await lighthouse.upload(file, "7946a66c.09067d51fce34114a34bc9bfe2456bb5", true, undefined, progressCallback);
+
+      // Upload file to Lighthouse (encrypted file upload)
+      const output : any = await lighthouse.upload(file, "7946a66c.09067d51fce34114a34bc9bfe2456bb5", signerAddress, signature, progressCallback);
       console.log('File Status:', output.data?.Hash);
       console.log('Visit at https://gateway.lighthouse.storage/ipfs/' + output.data?.Hash);
       return output.data?.Hash;
@@ -46,7 +80,7 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend }) => {
       try {
         for (const file of filesArray) {
           const cid = await uploadFile(file);
-          setBody((prevBody) => `File CID is ${cid}`);
+          setBody((prevBody) => `${prevBody}\nFile CID is ${cid}`);
         }
       } catch (error) {
         console.error('Error handling file change:', error);
@@ -69,9 +103,9 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend }) => {
 
   const handleSubmit = async () => {
     try {
-      const text = `To: ${to}\nSubject: ${subject}\nBody: ${body}`;
+      const text = `From: ${senderAddress}\nTo: ${to}\nSubject: ${subject}\nBody: ${body}`;
       const textCid = await uploadText(text, "mail_content");
-      const newBody = `Mail content uploaded: https://gateway.lighthouse.storage/ipfs/${textCid}`;
+      const newBody = `${body}\nMail content uploaded: https://gateway.lighthouse.storage/ipfs/${textCid}`;
 
       const newMail = {
         id: Date.now(),

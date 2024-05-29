@@ -1,61 +1,174 @@
 import React, { useEffect, useState } from "react";
 import lighthouse from '@lighthouse-web3/sdk';
+import axios from "axios";
 
 interface ReceivedFile {
-  publicKey: string;
-  fileName: string;
-  mimeType: string;
-  txHash: string;
-  status: string;
-  createdAt: number;
-  fileSizeInBytes: string;
   cid: string;
-  id: string;
-  lastUpdate: number;
-  encryption: boolean;
+  fileName: string;
+}
+
+interface FileDetails {
+  from: string;
+  subject: string;
+  body: string;
+  cid?: string;  // CID is optional
 }
 
 const ReceivedMails: React.FC = () => {
   const [files, setFiles] = useState<ReceivedFile[]>([]);
+  const [fileDetails, setFileDetails] = useState<{ [key: string]: FileDetails }>({});
+  const [selectedFile, setSelectedFile] = useState<FileDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchFiles = async () => {
-      try {
-        const response = await lighthouse.getUploads("7946a66c.09067d51fce34114a34bc9bfe2456bb5");
-        setFiles(response.data.fileList);
-      } catch (err) {
-        console.error('Error fetching files:', err);
-        setError('Failed to fetch files. Please try again.');
-      }
-    };
+  const getUploads = async () => {
+    try {
+      const response = await lighthouse.getUploads(
+        "7946a66c.09067d51fce34114a34bc9bfe2456bb5"
+      );
+      return response.data.fileList;
+    } catch (error) {
+      console.error("Failed to fetch files:", error);
+      return [];
+    }
+  };
 
+  const fetchFileDetails = async (cid: string) => {
+    try {
+      const response = await axios.get(
+        `https://gateway.lighthouse.storage/ipfs/${cid}`
+      );
+      const data = response.data;
+  
+      const fromMatch = data.match(/From:\s*(.*)/);
+      const subjectMatch = data.match(/Subject:\s*(.*)/);
+      const bodyMatch = data.match(/Body:\s*([\s\S]*?)(?:\nFile CID is (.*))?$/);
+  
+      if (fromMatch && subjectMatch && bodyMatch) {
+        const fileDetails: FileDetails = {
+          from: fromMatch[1],
+          subject: subjectMatch[1],
+          body: bodyMatch[1],
+          cid: bodyMatch[2]?.trim(),
+        };
+  
+        setFileDetails((prevDetails) => ({
+          ...prevDetails,
+          [cid]: fileDetails,
+        }));
+      }
+    } catch (error) {
+      console.error(`Failed to fetch details for CID ${cid}:`, error);
+      setFileDetails((prevDetails) => ({
+        ...prevDetails,
+        [cid]: { from: 'Unknown', subject: 'Failed to fetch data', body: 'Failed to fetch data' },
+      }));
+    }
+  };
+
+  const fetchFiles = async () => {
+    const fileList: any = await getUploads();
+    setFiles(fileList);
+    fileList.forEach((file: any) => {
+      fetchFileDetails(file.cid);
+    });
+  };
+
+  useEffect(() => {
     fetchFiles();
   }, []);
 
+  const handleFileClick = (file: FileDetails) => {
+    setSelectedFile(file);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedFile(null);
+  };
+
+  const downloadFile = async (cid: string, fileName: string) => {
+    try {
+      const response = await fetch(`https://gateway.lighthouse.storage/ipfs/${cid}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok.');
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to download the file:', error);
+    }
+  };
+
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">Received Files</h2>
+    <div>
+      <h2 className="text-2xl font-semibold mb-4">Received</h2>
       {error && <p className="text-red-500">{error}</p>}
       <ul className="divide-y divide-gray-200 border border-gray-300 rounded-xl">
         {files.map((file) => (
-          <li key={file.id} className="p-4 hover:bg-gray-100 rounded-xl">
-            <div className="grid grid-cols-3 gap-4">
-              <p className="truncate">File: {file.fileName}</p>
-              <p className="truncate">CID: {file.cid}</p>
-              <p className="truncate">Size: {file.fileSizeInBytes} bytes</p>
-            </div>
-            <a
-              href={`https://gateway.lighthouse.storage/ipfs/${file.cid}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline"
+          fileDetails[file.cid]?.from && fileDetails[file.cid]?.subject && fileDetails[file.cid]?.body && (
+            <li
+              key={file.cid}
+              className="p-4 hover:bg-gray-100 cursor-pointer rounded-xl"
+              onClick={() => handleFileClick(fileDetails[file.cid])}
             >
-              View File
-            </a>
-          </li>
+              <div className="grid grid-cols-3 gap-4">
+                <p className="truncate">From: {fileDetails[file.cid]?.from}</p>
+                <p className="truncate">Subject: {fileDetails[file.cid]?.subject}</p>
+                <p className="truncate">Body: {fileDetails[file.cid]?.body}</p>
+              </div>
+              {/* <a
+                href={`https://gateway.lighthouse.storage/ipfs/${file.cid}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
+                View File
+              </a> */}
+            </li>
+          )
         ))}
       </ul>
+
+      {selectedFile && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg w-1/3"
+            style={{ boxShadow: "8px 8px 0px 0px black" }}
+          >
+            <h2 className="text-2xl font-semibold mb-4">Mail Details</h2>
+            <p className="text-lg mb-2"><strong>From:</strong> {selectedFile.from}</p>
+            <p className="text-lg mb-2"><strong>Subject:</strong> {selectedFile.subject}</p>
+            <p className="text-lg mb-2"><strong>Body:</strong> {selectedFile.body}</p>
+            {selectedFile.cid && (
+              <>
+                <p className="text-lg mb-2"><strong>Attachment:</strong></p>
+                <ul className="list-disc ml-6 mb-2">
+                  <li>
+                    <button
+                      onClick={() => downloadFile(selectedFile.cid!, selectedFile.cid!)}
+                      className="text-blue-500 underline"
+                    >
+                      Download Attachment
+                    </button>
+                  </li>
+                </ul>
+              </>
+            )}
+            <button
+              onClick={handleCloseDialog}
+              className="mt-4 bg-purple-700 text-white font-semibold py-2 px-8 rounded-full hover:bg-purple-500"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
