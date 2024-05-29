@@ -50,7 +50,7 @@ const Mails: React.FC = () => {
 
       <div className="content">
         {activeTab === 'compose' && <ComposeMail onSend={handleSendMail} />}
-        {activeTab === 'sent' && <MailList mails={sentMails} title="Sent Mails" />}
+        {activeTab === 'sent' && <MailList/>}
         {activeTab === 'received' && <ReceivedFiles />}
       </div>
     </div>
