@@ -107,7 +107,7 @@ const ReceivedMails: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Received</h2>
+      {/* <h2 className="text-2xl font-semibold mb-4">Received</h2> */}
       {error && <p className="text-red-500">{error}</p>}
       <ul className="divide-y divide-gray-200 border border-gray-300 rounded-xl">
         {files.map((file) => (
@@ -136,7 +136,7 @@ const ReceivedMails: React.FC = () => {
       </ul>
 
       {selectedFile && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+        <div className="fixed right-[-15%] inset-0 flex items-center justify-center bg-black bg-opacity-60">
           <div
             className="bg-white p-6 rounded-lg shadow-lg w-1/3"
             style={{ boxShadow: "8px 8px 0px 0px black" }}

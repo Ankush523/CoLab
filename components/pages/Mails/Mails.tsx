@@ -30,19 +30,19 @@ const Mails: React.FC = () => {
       <div className="top-bar flex flex-row justify-around mb-6">
         <button
           onClick={() => setActiveTab('compose')}
-          className={`text-xl font-semibold ${activeTab === 'compose' ? 'text-black' : 'text-gray-400'}`}
+          className={`text-xl font-semibold w-[30%] ${activeTab === 'compose' ? 'text-black bg-gray-200 py-2 rounded-xl' : 'text-gray-400'}`}
         >
           Compose
         </button>
         <button
           onClick={() => setActiveTab('sent')}
-          className={`text-xl font-semibold ${activeTab === 'sent' ? 'text-black' : 'text-gray-400'}`}
+          className={`text-xl font-semibold w-[30%] ${activeTab === 'sent' ? 'text-black bg-gray-200 py-2 rounded-xl' : 'text-gray-400'}`}
         >
           Sent
         </button>
         <button
           onClick={() => setActiveTab('received')}
-          className={`text-xl font-semibold ${activeTab === 'received' ? 'text-black' : 'text-gray-400'}`}
+          className={`text-xl font-semibold w-[30%] ${activeTab === 'received' ? 'text-black bg-gray-200 py-2 rounded-xl' : 'text-gray-400'}`}
         >
           Inbox
         </button>
