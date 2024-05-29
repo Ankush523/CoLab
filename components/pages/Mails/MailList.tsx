@@ -39,7 +39,7 @@ const MailList: React.FC<MailListProps> = ({ mails, title }) => {
               <p className="truncate">
                 Body:{" "}
                 {mail.body.length > 15
-                  ? `${mail.body.slice(0, 15)}...`
+                  ? `${mail.body.slice(0, 40)}...`
                   : mail.body}
               </p>
             </div>

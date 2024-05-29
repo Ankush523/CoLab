@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ComposeMail from './ComposeMail';
 import MailList from './MailList';
+import ReceivedFiles from './ReceivedMails';
 
 interface Mail {
   id: number;
@@ -18,6 +19,10 @@ const Mails: React.FC = () => {
   const handleSendMail = (mail: Mail) => {
     setSentMails([...sentMails, mail]);
   };
+
+  const handleReceiveMail = (mail: Mail) => {
+    setReceivedMails([...receivedMails, mail]);
+  }
 
   return (
     <div className='px-6 py-4'>
@@ -46,7 +51,7 @@ const Mails: React.FC = () => {
       <div className="content">
         {activeTab === 'compose' && <ComposeMail onSend={handleSendMail} />}
         {activeTab === 'sent' && <MailList mails={sentMails} title="Sent Mails" />}
-        {activeTab === 'received' && <MailList mails={receivedMails} title="Received Mails" />}
+        {activeTab === 'received' && <ReceivedFiles />}
       </div>
     </div>
   );
