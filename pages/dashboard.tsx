@@ -11,7 +11,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 // Import the page components
 import Home from "@/components/pages/Home";
 import MyIssues from "@/components/pages/MyIssues";
-import Mails from "@/components/pages/Mails";
+import Mails from "@/components/pages/Mails/Mails";
 import Rewards from "@/components/pages/Rewards";
 import Profile from "@/components/pages/Profile";
 
@@ -82,9 +82,11 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-6">
-        <div className="flex flex-row justify-end">
-          <ConnectButton />
+      <div className="flex-1 py-6">
+        <div className="pb-6 border-b border-purple-200">
+          <div className="flex flex-row justify-end pr-6">
+            <ConnectButton />
+          </div>
         </div>
         {isClient ? <ActiveComponent /> : null}
       </div>
