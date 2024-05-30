@@ -103,7 +103,6 @@ const Home = () => {
                 <li
                   key={displayIssue.cid}
                   className="border p-3 m-2 hover:bg-gray-100 hover:shadow-lg cursor-pointer rounded-xl"
-                  // onClick={() => handleFileClick(listedIssueDetails[displayIssue.cid])}
                 >
                   <div className="flex flex-col">
                     <div className="flex flex-row justify-between">
@@ -114,21 +113,22 @@ const Home = () => {
                         Issuer: {listedIssueDetails[displayIssue.cid]?.issuer}
                       </p>
                     </div>
-                    <p className="text-lg">
-                      {listedIssueDetails[displayIssue.cid]?.description}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Date: {listedIssueDetails[displayIssue.cid]?.date}
-                    </p>
+                    <div className='flex flex-row justify-between'>
+                      <div className='flex flex-col'>
+                        <p className="text-lg">
+                          {listedIssueDetails[displayIssue.cid]?.description}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          Date: {listedIssueDetails[displayIssue.cid]?.date}
+                        </p>
+                      </div>
+                      <div className='flex flex-row space-x-2'>
+                      <button className='border border-white bg-purple-900 hover:bg-purple-500 my-2 px-4 rounded-md text-white shadow-md'>Email</button>
+                      <button className='border border-white bg-purple-900 hover:bg-purple-500 my-2 px-4 rounded-md text-white shadow-md'>Schedule Meet</button>
+                      </div>
+
+                    </div>
                   </div>
-                  {/* <a
-                  href={`https://gateway.lighthouse.storage/ipfs/${file.cid}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  View File
-                </a> */}
                 </li>
               )
           )}
