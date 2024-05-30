@@ -93,45 +93,47 @@ const Home = () => {
         </h1>
       </div>
 
-      <ul className="">
-        {listedIssues.map(
-          (displayIssue) =>
-            listedIssueDetails[displayIssue.cid]?.title &&
-            listedIssueDetails[displayIssue.cid]?.description &&
-            listedIssueDetails[displayIssue.cid]?.issuer && (
-              <li
-                key={displayIssue.cid}
-                className="border p-3 m-2 hover:bg-gray-100 hover:shadow-lg cursor-pointer rounded-xl"
-                // onClick={() => handleFileClick(listedIssueDetails[displayIssue.cid])}
-              >
-                <div className="flex flex-col">
-                  <div className="flex flex-row justify-between">
-                    <p className="text-xl font-semibold">
-                      {listedIssueDetails[displayIssue.cid]?.title}
+      <div className="h-[75vh] overflow-y-auto">
+        <ul className="">
+          {listedIssues.map(
+            (displayIssue) =>
+              listedIssueDetails[displayIssue.cid]?.title &&
+              listedIssueDetails[displayIssue.cid]?.description &&
+              listedIssueDetails[displayIssue.cid]?.issuer && (
+                <li
+                  key={displayIssue.cid}
+                  className="border p-3 m-2 hover:bg-gray-100 hover:shadow-lg cursor-pointer rounded-xl"
+                  // onClick={() => handleFileClick(listedIssueDetails[displayIssue.cid])}
+                >
+                  <div className="flex flex-col">
+                    <div className="flex flex-row justify-between">
+                      <p className="text-xl font-semibold">
+                        {listedIssueDetails[displayIssue.cid]?.title}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Issuer: {listedIssueDetails[displayIssue.cid]?.issuer}
+                      </p>
+                    </div>
+                    <p className="text-lg">
+                      {listedIssueDetails[displayIssue.cid]?.description}
                     </p>
                     <p className="text-sm text-gray-500">
-                      Issuer: {listedIssueDetails[displayIssue.cid]?.issuer}
+                      Date: {listedIssueDetails[displayIssue.cid]?.date}
                     </p>
                   </div>
-                  <p className="text-lg">
-                    {listedIssueDetails[displayIssue.cid]?.description}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Date: {listedIssueDetails[displayIssue.cid]?.date}
-                  </p>
-                </div>
-                {/* <a
-                href={`https://gateway.lighthouse.storage/ipfs/${file.cid}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-              >
-                View File
-              </a> */}
-              </li>
-            )
-        )}
-      </ul>
+                  {/* <a
+                  href={`https://gateway.lighthouse.storage/ipfs/${file.cid}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  View File
+                </a> */}
+                </li>
+              )
+          )}
+        </ul>
+      </div>
     </div>
   )
 }
