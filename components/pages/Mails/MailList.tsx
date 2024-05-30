@@ -23,7 +23,7 @@ const MailList: React.FC = () => {
   const getUploads = async () => {
     try {
       const response = await lighthouse.getUploads(
-        "7946a66c.09067d51fce34114a34bc9bfe2456bb5"
+        "d57a600d.6d80c1a46f5f4ead82a7062d26cebca0"
       );
       return response.data.fileList;
     } catch (error) {

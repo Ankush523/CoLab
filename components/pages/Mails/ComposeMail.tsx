@@ -58,10 +58,10 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend }) => {
         throw new Error("Failed to sign message")
       }
       // Upload file to Lighthouse (normal file upload)
-      // const output : any = await lighthouse.upload(file, "7946a66c.09067d51fce34114a34bc9bfe2456bb5", true, undefined, progressCallback);
+      // const output : any = await lighthouse.upload(file, "d57a600d.6d80c1a46f5f4ead82a7062d26cebca0", true, undefined, progressCallback);
 
       // Upload file to Lighthouse (encrypted file upload)
-      const output : any = await lighthouse.upload(file, "7946a66c.09067d51fce34114a34bc9bfe2456bb5", signerAddress, signature, progressCallback);
+      const output : any = await lighthouse.upload(file, "d57a600d.6d80c1a46f5f4ead82a7062d26cebca0", signerAddress, signature, progressCallback);
       console.log('File Status:', output.data?.Hash);
       console.log('Visit at https://gateway.lighthouse.storage/ipfs/' + output.data?.Hash);
       return output.data?.Hash;
@@ -90,7 +90,7 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend }) => {
 
   const uploadText = async (text: string, name: string) => {
     try {
-      const response = await lighthouse.uploadText(text, "7946a66c.09067d51fce34114a34bc9bfe2456bb5", name);
+      const response = await lighthouse.uploadText(text, "d57a600d.6d80c1a46f5f4ead82a7062d26cebca0", name);
       console.log('Text Status:', response.data?.Hash);
       console.log('Visit at https://gateway.lighthouse.storage/ipfs/' + response.data?.Hash);
       return response.data?.Hash;
