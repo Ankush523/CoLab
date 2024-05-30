@@ -19,6 +19,8 @@ const ReceivedMails: React.FC = () => {
   const [fileDetails, setFileDetails] = useState<{ [key: string]: FileDetails }>({});
   const [selectedFile, setSelectedFile] = useState<FileDetails | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const mailsPerPage = 5;
 
   const getUploads = async () => {
     try {
@@ -105,12 +107,22 @@ const ReceivedMails: React.FC = () => {
     }
   };
 
+  // Pagination logic
+  const filteredFiles = files.filter(file => fileDetails[file.cid]?.from && fileDetails[file.cid]?.subject && fileDetails[file.cid]?.body);
+  const indexOfLastMail = currentPage * mailsPerPage;
+  const indexOfFirstMail = indexOfLastMail - mailsPerPage;
+  const currentMails = filteredFiles.slice(indexOfFirstMail, indexOfLastMail);
+  const totalPages = Math.ceil(filteredFiles.length / mailsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <div>
-      {/* <h2 className="text-2xl font-semibold mb-4">Received</h2> */}
       {error && <p className="text-red-500">{error}</p>}
       <ul className="divide-y divide-gray-200 border border-gray-300 rounded-xl">
-        {files.map((file) => (
+        {currentMails.map((file) => (
           fileDetails[file.cid]?.from && fileDetails[file.cid]?.subject && fileDetails[file.cid]?.body && (
             <li
               key={file.cid}
@@ -122,21 +134,13 @@ const ReceivedMails: React.FC = () => {
                 <p className="truncate">Subject: {fileDetails[file.cid]?.subject}</p>
                 <p className="truncate">Body: {fileDetails[file.cid]?.body}</p>
               </div>
-              {/* <a
-                href={`https://gateway.lighthouse.storage/ipfs/${file.cid}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 underline"
-              >
-                View File
-              </a> */}
             </li>
           )
         ))}
       </ul>
 
       {selectedFile && (
-        <div className="fixed right-[-15%] inset-0 flex items-center justify-center bg-black bg-opacity-60">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
           <div
             className="bg-white p-6 rounded-lg shadow-lg w-1/3"
             style={{ boxShadow: "8px 8px 0px 0px black" }}
@@ -169,10 +173,20 @@ const ReceivedMails: React.FC = () => {
           </div>
         </div>
       )}
+
+      <div className="flex justify-center mt-4">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1 ? 'bg-purple-500 text-white' : 'bg-gray-300'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default ReceivedMails;
-
-//e76d4258.30b9dad0c8b44f7a9555e177270348c3
