@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import axios from 'axios';
-import lighthouse from '@lighthouse-web3/sdk';
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
+import lighthouse from "@lighthouse-web3/sdk";
 
 interface ScheduledDetails {
   meetAgenda: string;
@@ -22,7 +22,9 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [scheduled, setScheduled] = useState<ReceivedScheduledDetails[]>([]);
-  const [scheduledDetails, setScheduledDetails] = useState<{ [key: string]: ScheduledDetails }>({});
+  const [scheduledDetails, setScheduledDetails] = useState<{
+    [key: string]: ScheduledDetails;
+  }>({});
 
   const handleBooking = async () => {
     if (!startDate || !selectedTime) return;
@@ -37,7 +39,11 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
     `;
 
     try {
-      const response = await lighthouse.uploadText(bookingDetails, "3e9b96bc.15d532c44f924e808c128674a3938b7a", "booking_details");
+      const response = await lighthouse.uploadText(
+        bookingDetails,
+        "3e9b96bc.15d532c44f924e808c128674a3938b7a",
+        "booking_details"
+      );
       console.log("Uploaded booking details CID:", response.data.Hash);
     } catch (error) {
       console.error("Failed to upload booking details:", error);
@@ -46,7 +52,9 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
 
   const getUploads = async () => {
     try {
-      const response = await lighthouse.getUploads("3e9b96bc.15d532c44f924e808c128674a3938b7a");
+      const response = await lighthouse.getUploads(
+        "3e9b96bc.15d532c44f924e808c128674a3938b7a"
+      );
       return response.data.fileList;
     } catch (error) {
       console.error("Failed to fetch files:", error);
@@ -56,7 +64,9 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
 
   const fetchScheduledDetails = async (cid: string) => {
     try {
-      const response = await axios.get(`https://gateway.lighthouse.storage/ipfs/${cid}`);
+      const response = await axios.get(
+        `https://gateway.lighthouse.storage/ipfs/${cid}`
+      );
       const data = response.data;
 
       const issueTitleMatch = data.match(/Issue Title:\s*(.*)/);
@@ -66,7 +76,14 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
       const bookingDateMatch = data.match(/Booking Date:\s*(.*)/);
       const bookingTimeMatch = data.match(/Booking Time:\s*(.*)/);
 
-      if (issueTitleMatch && issuerMatch && descriptionMatch && dateMatch && bookingDateMatch && bookingTimeMatch) {
+      if (
+        issueTitleMatch &&
+        issuerMatch &&
+        descriptionMatch &&
+        dateMatch &&
+        bookingDateMatch &&
+        bookingTimeMatch
+      ) {
         const scheduledDetails: ScheduledDetails = {
           meetAgenda: issueTitleMatch[1],
           meetHost: issuerMatch[1],
@@ -86,12 +103,12 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
       setScheduledDetails((prevDetails) => ({
         ...prevDetails,
         [cid]: {
-          meetAgenda: 'Unknown',
-          meetHost: 'Unknown',
-          meetDescription: 'Unknown',
-          dateOfBooking: 'Unknown',
-          bookingDate: 'Unknown',
-          bookingTime: 'Unknown',
+          meetAgenda: "Unknown",
+          meetHost: "Unknown",
+          meetDescription: "Unknown",
+          dateOfBooking: "Unknown",
+          bookingDate: "Unknown",
+          bookingTime: "Unknown",
         },
       }));
     }
@@ -112,45 +129,76 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-semibold mb-4">Schedule a Meet</h2>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2">Select Date:</label>
-        <DatePicker selected={startDate} onChange={(date: Date) => setStartDate(date)} />
+      <div className="flex flex-col w-[40%] bg-white shadow-xl border  p-4 rounded-xl">
+        <div className="flex flex-row justify-around mb-4">
+          <div className="flex flex-row space-x-4">
+            <label className="my-2">Select Date:</label>
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date) => setStartDate(date)}
+              className="my-2 border border-gray-400 rounded w-[50%]"
+            />
+          </div>
+          <div className="flex flex-row space-x-4">
+            <label className="my-2">Select Time:</label>
+            <input
+              type="time"
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              className="p-2 border rounded border-gray-400"
+            />
+          </div>
+        </div>
+        <button
+          onClick={handleBooking}
+          className="bg-gradient-to-r from-violet-900 to-purple-500 border border-violet-900 mx-[30%] text-white px-4 py-2 rounded-full"
+        >
+          Confirm Booking
+        </button>
       </div>
-      <div className="flex flex-col mb-4">
-        <label className="mb-2">Select Time:</label>
-        <input
-          type="time"
-          value={selectedTime}
-          onChange={(e) => setSelectedTime(e.target.value)}
-          className="p-2 border rounded"
-        />
-      </div>
-      <button
-        onClick={handleBooking}
-        className="bg-purple-900 text-white px-4 py-2 rounded"
-      >
-        Confirm Booking
-      </button>
 
-      <h2 className="text-2xl font-semibold mt-8 mb-4">Scheduled Meets</h2>
-      <div className="h-[45vh] overflow-y-auto">
-        {scheduled.map((scheduledItem) => (
-            scheduledDetails[scheduledItem.cid]?.meetHost && scheduledDetails[scheduledItem.cid]?.bookingDate && scheduledDetails[scheduledItem.cid]?.bookingTime && (
-                <li
+      <h2 className="text-2xl font-semibold mt-8 mb-2">Scheduled Meets</h2>
+      <div className="bg-gray-100 py-4 rounded-xl">
+        <div className="h-[50vh] grid grid-cols-2 gap-4 overflow-y-auto rounded-xl">
+          {scheduled.map(
+            (scheduledItem) =>
+              scheduledDetails[scheduledItem.cid]?.meetHost &&
+              scheduledDetails[scheduledItem.cid]?.bookingDate &&
+              scheduledDetails[scheduledItem.cid]?.bookingTime && (
+                <div
                   key={scheduledItem.cid}
-                  className="p-4 hover:bg-gray-100 cursor-pointer rounded-xl"
+                  className=" bg-white cursor-pointer border rounded-xl shadow-md"
                 >
-                    <div key={scheduledItem.cid} className="border p-3 m-2 rounded-lg">
-                        <p><strong>Issue Title:</strong> {scheduledDetails[scheduledItem.cid]?.meetAgenda}</p>
-                        <p><strong>Issuer:</strong> {scheduledDetails[scheduledItem.cid]?.meetHost}</p>
-                        <p><strong>Description:</strong> {scheduledDetails[scheduledItem.cid]?.meetDescription}</p>
-                        <p><strong>Date of Booking:</strong> {scheduledDetails[scheduledItem.cid]?.dateOfBooking}</p>
-                        <p><strong>Booking Date:</strong> {scheduledDetails[scheduledItem.cid]?.bookingDate}</p>
-                        <p><strong>Booking Time:</strong> {scheduledDetails[scheduledItem.cid]?.bookingTime}</p>
-                    </div>
-                </li>
-            )
-        ))}
+                  <div className="p-4 rounded-lg">
+                    <p>
+                      <strong>Issue Title:</strong>{" "}
+                      {scheduledDetails[scheduledItem.cid]?.meetAgenda}
+                    </p>
+                    <p>
+                      <strong>Issuer:</strong>{" "}
+                      {scheduledDetails[scheduledItem.cid]?.meetHost}
+                    </p>
+                    <p>
+                      <strong>Description:</strong>{" "}
+                      {scheduledDetails[scheduledItem.cid]?.meetDescription}
+                    </p>
+                    <p>
+                      <strong>Date of Booking:</strong>{" "}
+                      {scheduledDetails[scheduledItem.cid]?.dateOfBooking}
+                    </p>
+                    <p>
+                      <strong>Booking Date:</strong>{" "}
+                      {scheduledDetails[scheduledItem.cid]?.bookingDate}
+                    </p>
+                    <p>
+                      <strong>Booking Time:</strong>{" "}
+                      {scheduledDetails[scheduledItem.cid]?.bookingTime}
+                    </p>
+                  </div>
+                </div>
+              )
+          )}
+        </div>
       </div>
     </div>
   );

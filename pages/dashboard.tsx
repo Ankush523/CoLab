@@ -217,7 +217,7 @@ const Dashboard = () => {
           onClick={() => setActivePage("Bookings")}
         >
           <Image src={bookings} width={30} height={30} alt={""} />
-          <label className="font-semibold text-gray-800 mt-1">Bookings</label>
+          <label className="font-semibold text-gray-800 mt-1">Schedules</label>
         </div>
 
         <div
@@ -236,7 +236,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="flex-1 py-6">
+      <div className="flex-1 py-6 bg-gray-100">
         <div className="pb-6 border-b border-purple-200">
           <div className="flex flex-row justify-end pr-6">
             <ConnectButton />

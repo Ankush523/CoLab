@@ -346,7 +346,7 @@ const ReceivedMails: React.FC = () => {
   return (
     <div>
       {error && <p className="text-red-500">{error}</p>}
-      <ul className="divide-y divide-gray-200 border border-gray-300 rounded-xl">
+      <ul className="divide-y divide-gray-200 border border-gray-300 rounded-xl bg-white shadow-xl">
         {currentMails.map((file) => (
           fileDetails[file.cid]?.from && fileDetails[file.cid]?.subject && fileDetails[file.cid]?.body && (
             <li

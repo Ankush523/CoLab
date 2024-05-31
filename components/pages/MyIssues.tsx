@@ -524,7 +524,7 @@ const MyIssues: React.FC = () => {
             listedIssueDetails[displayIssue.cid]?.issuer && (
               <li
                 key={displayIssue.cid}
-                className="border p-3 m-2 hover:bg-gray-100 hover:shadow-lg cursor-pointer rounded-xl"
+                className="border p-3 m-2 bg-white hover:shadow-lg cursor-pointer rounded-xl"
                 // onClick={() => handleFileClick(listedIssueDetails[displayIssue.cid])}
               >
                 <div className="flex flex-col">

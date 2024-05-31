@@ -377,7 +377,7 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend, defaultTo }) => {
   return (
     <div className="flex flex-col items-center">
       <div
-        className="border border-black mt-[5%] w-[30%] p-4 rounded-xl"
+        className="border border-black mt-[5%] w-[30%] p-4 rounded-xl bg-white"
         style={{ boxShadow: "8px 8px 0px 0px black" }}
       >
         <h2 className="text-xl mb-4">Compose Mail</h2>

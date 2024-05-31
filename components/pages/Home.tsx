@@ -262,7 +262,7 @@ const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails)
               listedIssueDetails[displayIssue.cid]?.issuer && (
                 <li
                   key={displayIssue.cid}
-                  className="border p-3 m-2 hover:bg-gray-100 hover:shadow-lg cursor-pointer rounded-xl"
+                  className="border bg-white p-3 m-2  hover:shadow-lg cursor-pointer rounded-xl"
                 >
                   <div className="flex flex-col">
                     <div className="flex flex-row justify-between">
