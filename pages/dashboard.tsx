@@ -183,7 +183,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-row bg-white h-screen text-black">
-      <div className="flex flex-col w-[15%] border border-r-purple-200 bg-purple-50 px-4">
+      <div className="flex flex-col w-[15%] border border-r-gray-800 bg-purple-50 px-4">
         <div className="flex flex-row space-x-2 mt-6 ">
           <Image src={code} width={40} height={40} alt={""} />
           <label className="mt-2 text-2xl font-semibold text-purple-700">
@@ -236,8 +236,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="flex-1 py-6 bg-gray-100">
-        <div className="pb-6 border-b border-purple-200">
+      <div className="flex-1 py-6 bg-gray-50">
+        <div className="pb-6 border-b border-gray-800">
           <div className="flex flex-row justify-end pr-6">
             <ConnectButton />
           </div>

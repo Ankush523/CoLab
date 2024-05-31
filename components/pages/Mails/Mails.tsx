@@ -99,7 +99,7 @@ const Mails: React.FC = () => {
 
   return (
     <div className='px-6 py-4'>
-      <h1 className="text-3xl font-semibold mb-6 text-violet-700">Mails</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-purple-700">MAILS</h1>
       <div className="top-bar flex flex-row justify-around mb-6">
         <button
           onClick={() => setActiveTab('compose')}

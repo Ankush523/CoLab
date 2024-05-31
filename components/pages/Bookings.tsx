@@ -128,7 +128,7 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">Schedule a Meet</h2>
+      <h2 className="text-2xl text-purple-700 font-semibold mb-4">SCHEDULE CALL</h2>
       <div className="flex flex-col w-[40%] bg-white shadow-xl border  p-4 rounded-xl">
         <div className="flex flex-row justify-around mb-4">
           <div className="flex flex-row space-x-4">
@@ -157,8 +157,8 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
         </button>
       </div>
 
-      <h2 className="text-2xl font-semibold mt-8 mb-2">Scheduled Calls</h2>
-      <div className="bg-gray-100 py-4 rounded-xl">
+      <h2 className="text-2xl text-purple-700 font-semibold mt-8 mb-2">SCHEDULED CALLS</h2>
+      <div className="bg-gray-50 py-4 rounded-xl">
         <div className="h-[50vh] grid grid-cols-2 gap-4 overflow-y-auto rounded-xl mr-[5%]">
           {scheduled.map(
             (scheduledItem) =>

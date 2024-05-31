@@ -248,8 +248,8 @@ const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails)
   return (
     <div className="p-4">
       <div className="flex flex-row justify-between">
-        <h1 className="text-3xl font-semibold m-4 text-violet-700">
-          Featured Issues
+        <h1 className="text-2xl font-semibold m-4 text-purple-700">
+          FEATURED ISSUES
         </h1>
       </div>
 

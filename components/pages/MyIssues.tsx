@@ -500,8 +500,8 @@ const MyIssues: React.FC = () => {
   return (
     <div className="p-4">
       <div className="flex flex-row justify-between">
-        <h1 className="text-3xl font-semibold m-4 text-violet-700">
-          My Issues
+        <h1 className="text-2xl font-semibold m-4 text-purple-700">
+          MY ISSUES
         </h1>
         <button
           className="relative m-4  w-[15%] border border-violet-900 bg-gradient-to-r from-violet-900 to-purple-400 text-white font-semibold  rounded-lg shadow transition-shadow duration-300 hover:shadow-none"

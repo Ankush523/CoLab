@@ -351,7 +351,7 @@ const ReceivedMails: React.FC = () => {
           fileDetails[file.cid]?.from && fileDetails[file.cid]?.subject && fileDetails[file.cid]?.body && (
             <li
               key={file.cid}
-              className="p-4 hover:bg-gray-100 cursor-pointer rounded-xl"
+              className="p-4 hover:bg-gray-50 cursor-pointer rounded-xl"
               onClick={() => handleFileClick(fileDetails[file.cid])}
             >
               <div className="grid grid-cols-3 gap-4">
