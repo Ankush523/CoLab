@@ -19,32 +19,32 @@
 //   const [uploadError, setUploadError] = useState<string | null>(null);
 //   const [senderAddress, setSenderAddress] = useState<string | null>(null);
 
-//   const signAuthMessage = async () => {
-//     if (window.ethereum) {
-//       try {
-//         const accounts = await window.ethereum.request({
-//           method: "eth_requestAccounts",
-//         })
-//         if (accounts.length === 0) {
-//           throw new Error("No accounts returned from Wallet.")
-//         }
-//         const signerAddress = accounts[0]
-//         setSenderAddress(signerAddress)
-//         const { message } = (await lighthouse.getAuthMessage(signerAddress)).data
-//         const signature = await window.ethereum.request({
-//           method: "personal_sign",
-//           params: [message, signerAddress],
-//         })
-//         return { signature, signerAddress }
-//       } catch (error) {
-//         console.error("Error signing message with Wallet", error)
-//         return null
-//       }
-//     } else {
-//       console.log("Please install Wallet!")
-//       return null
-//     }
-//   }
+  // const signAuthMessage = async () => {
+  //   if (window.ethereum) {
+  //     try {
+  //       const accounts = await window.ethereum.request({
+  //         method: "eth_requestAccounts",
+  //       })
+  //       if (accounts.length === 0) {
+  //         throw new Error("No accounts returned from Wallet.")
+  //       }
+  //       const signerAddress = accounts[0]
+  //       setSenderAddress(signerAddress)
+  //       const { message } = (await lighthouse.getAuthMessage(signerAddress)).data
+  //       const signature = await window.ethereum.request({
+  //         method: "personal_sign",
+  //         params: [message, signerAddress],
+  //       })
+  //       return { signature, signerAddress }
+  //     } catch (error) {
+  //       console.error("Error signing message with Wallet", error)
+  //       return null
+  //     }
+  //   } else {
+  //     console.log("Please install Wallet!")
+  //     return null
+  //   }
+  // }
 
 //   const progressCallback = (progressData: { total: number; uploaded: number }) => {
 //     const percentageDone = 100 - Math.round((progressData.uploaded / progressData.total) * 100);
@@ -248,27 +248,33 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend, defaultTo }) => {
     connectWallet();
   }, []);
 
+  
   const signAuthMessage = async () => {
-    if (!senderAddress) {
-      await connectWallet();
-    }
-    if (window.ethereum && senderAddress) {
+    if (window.ethereum) {
       try {
-        const { message } = (await lighthouse.getAuthMessage(senderAddress)).data;
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        })
+        if (accounts.length === 0) {
+          throw new Error("No accounts returned from Wallet.")
+        }
+        const signerAddress = accounts[0]
+        setSenderAddress(signerAddress)
+        const { message } = (await lighthouse.getAuthMessage(signerAddress)).data
         const signature = await window.ethereum.request({
           method: "personal_sign",
-          params: [message, senderAddress],
-        });
-        return { signature, senderAddress };
+          params: [message, signerAddress],
+        })
+        return { signature, signerAddress }
       } catch (error) {
-        console.error("Error signing message with Wallet", error);
-        return null;
+        console.error("Error signing message with Wallet", error)
+        return null
       }
     } else {
-      console.log("Please install Wallet!");
-      return null;
+      console.log("Please install Wallet!")
+      return null
     }
-  };
+  }
 
   const progressCallback = (progressData: { total: number; uploaded: number }) => {
     const percentageDone = 100 - Math.round((progressData.uploaded / progressData.total) * 100);
@@ -337,18 +343,23 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend, defaultTo }) => {
     }
 
     try {
-      let owningAddress: any = to;
+      let owningAddressObject: any = to;
+      let owningAddress: string = to;
       if (to.endsWith('.eth')) {
-        owningAddress = await ownerOfEnsName(to);
-        console.log('Owning Address:', owningAddress);
+        owningAddressObject = await ownerOfEnsName(to);
+        owningAddress = owningAddressObject.owner;
+        console.log('Owning Address:', owningAddressObject);
       }
-      const text = `From: ${senderAddress}\nTo: ${owningAddress.owner}\nSubject: ${subject}\nBody: ${body}`;
+      else {
+        owningAddress = to;
+      }
+      const text = `From: ${senderAddress}\nTo: ${owningAddress}\nSubject: ${subject}\nBody: ${body}`;
       const textCid = await uploadText(text, "mail_content");
       const newBody = `${body}\nMail content uploaded: https://gateway.lighthouse.storage/ipfs/${textCid}`;
 
       const newMail = {
         id: Date.now(),
-        to: owningAddress.owner,
+        to: owningAddress,
         subject,
         body: newBody,
         attachments,

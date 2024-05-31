@@ -85,7 +85,7 @@ const Mails: React.FC = () => {
       setActiveTab(router.query.tab as 'compose' | 'sent' | 'received');
     }
     if (router.query.to) {
-      setDefaultTo(router.query.to as string);
+      setDefaultTo(router.query.to as any);
     }
   }, [router.query.tab, router.query.to]);
 
