@@ -157,9 +157,9 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
         </button>
       </div>
 
-      <h2 className="text-2xl font-semibold mt-8 mb-2">Scheduled Meets</h2>
+      <h2 className="text-2xl font-semibold mt-8 mb-2">Scheduled Calls</h2>
       <div className="bg-gray-100 py-4 rounded-xl">
-        <div className="h-[50vh] grid grid-cols-2 gap-4 overflow-y-auto rounded-xl">
+        <div className="h-[50vh] grid grid-cols-2 gap-4 overflow-y-auto rounded-xl mr-[5%]">
           {scheduled.map(
             (scheduledItem) =>
               scheduledDetails[scheduledItem.cid]?.meetHost &&
@@ -167,32 +167,19 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
               scheduledDetails[scheduledItem.cid]?.bookingTime && (
                 <div
                   key={scheduledItem.cid}
-                  className=" bg-white cursor-pointer border rounded-xl shadow-md"
+                  className=" bg-white cursor-pointer border rounded-xl shadow-md h-[fit-content] py-1"
                 >
                   <div className="p-4 rounded-lg">
+                    <p className="text-xl mb-4">With <strong className="font-semibold">{scheduledDetails[scheduledItem.cid]?.meetHost}</strong></p>
+                    <p>Agenda : {scheduledDetails[scheduledItem.cid]?.meetAgenda}</p>
                     <p>
-                      <strong>Issue Title:</strong>{" "}
-                      {scheduledDetails[scheduledItem.cid]?.meetAgenda}
+                     Issue : {scheduledDetails[scheduledItem.cid]?.meetDescription}
                     </p>
-                    <p>
-                      <strong>Issuer:</strong>{" "}
-                      {scheduledDetails[scheduledItem.cid]?.meetHost}
+                    <p className="mt-4">
+                      Scheduled on : {scheduledDetails[scheduledItem.cid]?.bookingDate} at {scheduledDetails[scheduledItem.cid]?.bookingTime} hrs
                     </p>
-                    <p>
-                      <strong>Description:</strong>{" "}
-                      {scheduledDetails[scheduledItem.cid]?.meetDescription}
-                    </p>
-                    <p>
-                      <strong>Date of Booking:</strong>{" "}
-                      {scheduledDetails[scheduledItem.cid]?.dateOfBooking}
-                    </p>
-                    <p>
-                      <strong>Booking Date:</strong>{" "}
-                      {scheduledDetails[scheduledItem.cid]?.bookingDate}
-                    </p>
-                    <p>
-                      <strong>Booking Time:</strong>{" "}
-                      {scheduledDetails[scheduledItem.cid]?.bookingTime}
+                    <p className="text-sm mt-2">
+                      Booked on {scheduledDetails[scheduledItem.cid]?.dateOfBooking}
                     </p>
                   </div>
                 </div>
