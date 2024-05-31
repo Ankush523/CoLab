@@ -216,6 +216,7 @@ import myissues from "@/images/issues.png";
 import mails from "@/images/mails.png";
 import rewards from "@/images/rewards.png";
 import profile from "@/images/profile.png";
+import bookings from "@/images/bookings.png";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 // Import the page components
@@ -224,14 +225,16 @@ import MyIssues from "@/components/pages/MyIssues";
 import Mails from "@/components/pages/mails/Mails";
 import Rewards from "@/components/pages/Rewards";
 import Profile from "@/components/pages/Profile";
+import Bookings from "@/components/pages/Bookings";
 
 // Define the type for page names
-type PageName = "Home" | "My Issues" | "Mails" | "Rewards" | "Profile";
+type PageName = "Home" | "My Issues" | "Mails" | "Bookings" | "Rewards" | "Profile";
 
 const pageComponents: { [key in PageName]: React.ComponentType } = {
   Home: Home,
   "My Issues": MyIssues,
   Mails: Mails,
+  Bookings: Bookings,
   Rewards: Rewards,
   Profile: Profile,
 };
@@ -247,7 +250,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (router.query.tab) {
-      setActivePage('Mails');
+      setActivePage("Mails");
     }
   }, [router.query.tab]);
 
@@ -288,6 +291,15 @@ const Dashboard = () => {
           <Image src={mails} width={30} height={30} alt={""} />
           <label className="font-semibold text-gray-800 mt-1">Mails</label>
         </div>
+
+        <div
+          className="flex flex-row space-x-4 mb-5 cursor-pointer"
+          onClick={() => setActivePage("Bookings")}
+        >
+          <Image src={bookings} width={30} height={30} alt={""} />
+          <label className="font-semibold text-gray-800 mt-1">Bookings</label>
+        </div>
+
         <div
           className="flex flex-row space-x-4 mb-5 pb-5 cursor-pointer border-b border-b-gray-800"
           onClick={() => setActivePage("Rewards")}
