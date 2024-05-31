@@ -190,6 +190,11 @@
 import React, { useState, useEffect } from "react";
 import lighthouse from '@lighthouse-web3/sdk';
 import { useRouter } from 'next/router';
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
+import { addEnsContracts } from '@ensdomains/ensjs';
+import { getOwner } from '@ensdomains/ensjs/public';
+import { ethers } from "ethers";
 
 interface ComposeMailProps {
   onSend: (mail: {
@@ -217,7 +222,7 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend, defaultTo }) => {
     }
   }, [router.query.to]);
 
-  const signAuthMessage = async () => {
+  const connectWallet = async () => {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
@@ -228,12 +233,33 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend, defaultTo }) => {
         }
         const signerAddress = accounts[0];
         setSenderAddress(signerAddress);
-        const { message } = (await lighthouse.getAuthMessage(signerAddress)).data;
+        return signerAddress;
+      } catch (error) {
+        console.error("Error connecting to wallet", error);
+        return null;
+      }
+    } else {
+      console.log("Please install Wallet!");
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
+
+  const signAuthMessage = async () => {
+    if (!senderAddress) {
+      await connectWallet();
+    }
+    if (window.ethereum && senderAddress) {
+      try {
+        const { message } = (await lighthouse.getAuthMessage(senderAddress)).data;
         const signature = await window.ethereum.request({
           method: "personal_sign",
-          params: [message, signerAddress],
+          params: [message, senderAddress],
         });
-        return { signature, signerAddress };
+        return { signature, senderAddress };
       } catch (error) {
         console.error("Error signing message with Wallet", error);
         return null;
@@ -295,15 +321,34 @@ const ComposeMail: React.FC<ComposeMailProps> = ({ onSend, defaultTo }) => {
     }
   };
 
+  const ownerOfEnsName = async (name: string) => {
+    const client = createPublicClient({
+      chain: addEnsContracts(mainnet),
+      transport: http(),
+    });
+    const result = await getOwner(client, { name });
+    return result; // Directly return the owner address
+  };
+
   const handleSubmit = async () => {
+    if (!senderAddress) {
+      alert("Please connect your wallet first.");
+      return;
+    }
+
     try {
-      const text = `From: ${senderAddress}\nTo: ${to}\nSubject: ${subject}\nBody: ${body}`;
+      let owningAddress: any = to;
+      if (to.endsWith('.eth')) {
+        owningAddress = await ownerOfEnsName(to);
+        console.log('Owning Address:', owningAddress);
+      }
+      const text = `From: ${senderAddress}\nTo: ${owningAddress.owner}\nSubject: ${subject}\nBody: ${body}`;
       const textCid = await uploadText(text, "mail_content");
       const newBody = `${body}\nMail content uploaded: https://gateway.lighthouse.storage/ipfs/${textCid}`;
 
       const newMail = {
         id: Date.now(),
-        to,
+        to: owningAddress.owner,
         subject,
         body: newBody,
         attachments,
