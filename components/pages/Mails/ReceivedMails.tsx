@@ -223,9 +223,7 @@ const ReceivedMails: React.FC = () => {
 
   const getUploads = async () => {
     try {
-      const response = await lighthouse.getUploads(
-        "d57a600d.6d80c1a46f5f4ead82a7062d26cebca0"
-      );
+      const response = await lighthouse.getUploads("d57a600d.6d80c1a46f5f4ead82a7062d26cebca0");
       return response.data.fileList;
     } catch (error) {
       console.error("Failed to fetch files:", error);
@@ -235,15 +233,13 @@ const ReceivedMails: React.FC = () => {
 
   const fetchFileDetails = async (cid: string) => {
     try {
-      const response = await axios.get(
-        `https://gateway.lighthouse.storage/ipfs/${cid}`
-      );
+      const response = await axios.get(`https://gateway.lighthouse.storage/ipfs/${cid}`);
       const data = response.data;
-  
+
       const fromMatch = data.match(/From:\s*(.*)/);
       const subjectMatch = data.match(/Subject:\s*(.*)/);
       const bodyMatch = data.match(/Body:\s*([\s\S]*?)(?:\nFile CID is (.*))?$/);
-  
+
       if (fromMatch && subjectMatch && bodyMatch) {
         const fileDetails: FileDetails = {
           from: fromMatch[1],
@@ -251,14 +247,14 @@ const ReceivedMails: React.FC = () => {
           body: bodyMatch[1],
           cid: bodyMatch[2]?.trim(),
         };
-  
+
         setFileDetails((prevDetails) => ({
           ...prevDetails,
           [cid]: fileDetails,
         }));
 
         // Resolve ENS name for the "from" address
-        resolveEnsName(fromMatch[1]);
+        await resolveEnsName(fromMatch[1]);
       }
     } catch (error) {
       console.error(`Failed to fetch details for CID ${cid}:`, error);
@@ -282,20 +278,29 @@ const ReceivedMails: React.FC = () => {
   }, []);
 
   const resolveEnsName = async (address: any) => {
-    try {
-      const client = createPublicClient({
-        chain: addEnsContracts(mainnet),
-        transport: http(),
-      });
-      const result = await getName(client, { address });
-      if (result.match) {
-        setEnsNames((prevNames) => ({
-          ...prevNames,
-          [address]: result.name,
-        }));
+    const client = createPublicClient({
+      chain: addEnsContracts(mainnet),
+      transport: http(`https://mainnet.infura.io/v3/84872fbad3a142a7ad9ff7d77f986212`),
+    });
+
+    const retries = 3;
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const result = await getName(client, { address });
+        if (result.match) {
+          setEnsNames((prevNames) => ({
+            ...prevNames,
+            [address]: result.name,
+          }));
+          return;
+        }
+      } catch (error) {
+        if (attempt === retries) {
+          console.error(`Failed to resolve ENS name for ${address} after ${retries} attempts:`, error);
+        } else {
+          console.warn(`Retrying ENS resolution for ${address} (attempt ${attempt} of ${retries})`);
+        }
       }
-    } catch (error) {
-      console.error(`Failed to resolve ENS name for ${address}:`, error);
     }
   };
 

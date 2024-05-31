@@ -220,6 +220,8 @@ const MailList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const mailsPerPage = 8;
 
+  const infuraURL :string = 'https://mainnet.infura.io/v3/84872fbad3a142a7ad9ff7d77f986212'
+
   const getUploads = async () => {
     try {
       const response = await lighthouse.getUploads(
@@ -281,23 +283,31 @@ const MailList: React.FC = () => {
   }, []);
 
   const resolveEnsName = async (address: any) => {
-    try {
-      const client = createPublicClient({
-        chain: addEnsContracts(mainnet),
-        transport: http(),
-      });
-      const result = await getName(client, { address });
-      if (result.match) {
-        setEnsNames((prevNames) => ({
-          ...prevNames,
-          [address]: result.name,
-        }));
+    const client = createPublicClient({
+      chain: addEnsContracts(mainnet),
+      transport: http(infuraURL),
+    });
+
+    const retries = 5;
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const result = await getName(client, { address });
+        if (result.match) {
+          setEnsNames((prevNames) => ({
+            ...prevNames,
+            [address]: result.name,
+          }));
+          return;
+        }
+      } catch (error) {
+        if (attempt === retries) {
+          console.error(`Failed to resolve ENS name for ${address} after ${retries} attempts:`, error);
+        } else {
+          console.warn(`Retrying ENS resolution for ${address} (attempt ${attempt} of ${retries})`);
+        }
       }
-    } catch (error) {
-      console.error(`Failed to resolve ENS name for ${address}:`, error);
     }
   };
-
   const handleFileClick = (file: FileDetails) => {
     setSelectedFile(file);
   };
