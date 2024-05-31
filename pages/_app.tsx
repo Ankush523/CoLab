@@ -11,6 +11,7 @@ import {
 import { WagmiProvider } from "wagmi";
 import { mainnet, polygon, optimism, arbitrum, base } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { HuddleClient, HuddleProvider } from "@huddle01/react";
 
 const config = getDefaultConfig({
   appName: "My RainbowKit App",
@@ -20,6 +21,15 @@ const config = getDefaultConfig({
 });
 
 const queryClient = new QueryClient();
+
+const huddleClient = new HuddleClient({
+  projectId: "zMQHa6hH5hGrxfwYZp7z8I-1lWScI7UA",
+  options: {
+    activeSpeakers: {
+      size: 8,
+    },
+  },
+});
 
 // const roboto = Roboto({ subsets: ["latin"],weight: ['400','700'] });
 
@@ -36,7 +46,9 @@ export default function App({ Component, pageProps }: AppProps) {
             overlayBlur: "small",
           })}
         >
-          <Component {...pageProps} />
+          <HuddleProvider client={huddleClient}>
+            <Component {...pageProps} />
+          </HuddleProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

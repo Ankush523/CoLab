@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ensdomains/ensjs": "^3.7.0",
+    "@huddle01/react": "^2.0.14",
+    "@huddle01/server-sdk": "^2.2.2",
     "@lighthouse-web3/sdk": "^0.3.3",
     "@next/font": "^14.2.3",
     "@rainbow-me/rainbowkit": "^2.1.1",
@@ -25,6 +27,7 @@
     "wagmi": "^2.9.7"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-datepicker": "^6.2.0",

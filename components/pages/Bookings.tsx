@@ -3,6 +3,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import lighthouse from "@lighthouse-web3/sdk";
+import Image from "next/image";
+import link from "@/images/link.png";
 
 interface ScheduledDetails {
   meetAgenda: string;
@@ -25,6 +27,7 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
   const [scheduledDetails, setScheduledDetails] = useState<{
     [key: string]: ScheduledDetails;
   }>({});
+  const [roomIds, setRoomIds] = useState<{ [key: string]: string }>({});
 
   const handleBooking = async () => {
     if (!startDate || !selectedTime) return;
@@ -126,10 +129,32 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
     fetchScheduled();
   }, []);
 
+  const createRoom = async (cid: string) => {
+    const response: any = await axios.post(
+      "https://api.huddle01.com/api/v1/create-room",
+      {
+        title: "Huddle01-Test",
+        hostWallets: ["0xCF1E6Ab1949D0573362f5278FAbCa4Ec74BE913C"],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "dqwg1L7ombeVA_WdaBrLD5zuGTGgLwkk",
+        },
+      }
+    );
+    console.log(response);
+    console.log("Room id:", response?.data);
+    setRoomIds((prevRoomIds) => ({
+      ...prevRoomIds,
+      [cid]: response?.data?.data?.roomId,
+    }));
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-2xl text-purple-700 font-semibold mb-4">SCHEDULE CALL</h2>
-      <div className="flex flex-col w-[40%] bg-white shadow-xl border  p-4 rounded-xl">
+      <div className="flex flex-col w-[40%] bg-white shadow-xl border p-4 rounded-xl">
         <div className="flex flex-row justify-around mb-4">
           <div className="flex flex-row space-x-4">
             <label className="my-2">Select Date:</label>
@@ -167,16 +192,35 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
               scheduledDetails[scheduledItem.cid]?.bookingTime && (
                 <div
                   key={scheduledItem.cid}
-                  className=" bg-white cursor-pointer border rounded-xl shadow-md h-[fit-content] py-1"
+                  className="bg-white cursor-pointer border rounded-xl shadow-md h-[fit-content] py-1"
                 >
                   <div className="p-4 rounded-lg">
-                    <p className="text-xl mb-4">With <strong className="font-semibold">{scheduledDetails[scheduledItem.cid]?.meetHost}</strong></p>
-                    <p>Agenda : {scheduledDetails[scheduledItem.cid]?.meetAgenda}</p>
-                    <p>
-                     Issue : {scheduledDetails[scheduledItem.cid]?.meetDescription}
-                    </p>
+                    <div className="flex flex-row justify-between mb-4">
+                      <p className="text-xl ">
+                        With{" "}
+                        <strong className="font-semibold">
+                          {(scheduledDetails[scheduledItem.cid]?.meetHost).slice(0, 6)}...
+                          {(scheduledDetails[scheduledItem.cid]?.meetHost).slice(-6)}
+                        </strong>
+                      </p>
+                      <button
+                        className="bg-indigo-500 px-4 rounded-full text-white shadow-xl"
+                        onClick={() => createRoom(scheduledItem.cid)}
+                      >
+                        Get Room Id
+                      </button>
+                    </div>
+
+                    <div className="flex flex-row justify-between">
+                      <p>Agenda : {scheduledDetails[scheduledItem.cid]?.meetAgenda}</p>
+                      {roomIds[scheduledItem.cid] && (
+                        <p>Room ID: {roomIds[scheduledItem.cid]}</p>
+                      )}
+                    </div>
+                    <p>Issue : {scheduledDetails[scheduledItem.cid]?.meetDescription}</p>
                     <p className="mt-4">
-                      Scheduled on : {scheduledDetails[scheduledItem.cid]?.bookingDate} at {scheduledDetails[scheduledItem.cid]?.bookingTime} hrs
+                      Scheduled on : {scheduledDetails[scheduledItem.cid]?.bookingDate} at{" "}
+                      {scheduledDetails[scheduledItem.cid]?.bookingTime} hrs
                     </p>
                     <p className="text-sm mt-2">
                       Booked on {scheduledDetails[scheduledItem.cid]?.dateOfBooking}
