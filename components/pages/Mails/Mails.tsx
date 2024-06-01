@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ComposeMail from './ComposeMail';
-import MailList from './MailList';
-import ReceivedFiles from './ReceivedMails';
+import ComposeMail from './composemail';
+import MailList from './maillist'
+import ReceivedFiles from './receivedmails';
 import { useRouter } from 'next/router';
-import Image from 'next/image';
-import compose from '@/images/compose.png';
-import sent from '@/images/sent.png';
-import inbox from '@/images/inbox.png';
 
 interface Mail {
   id: number;
