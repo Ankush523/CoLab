@@ -5,6 +5,7 @@ import axios from "axios";
 import lighthouse from "@lighthouse-web3/sdk";
 import Image from "next/image";
 import link from "@/images/link.png";
+import Button from "../Buttons";
 
 interface ScheduledDetails {
   meetAgenda: string;
@@ -203,12 +204,7 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
                           {(scheduledDetails[scheduledItem.cid]?.meetHost).slice(-6)}
                         </strong>
                       </p>
-                      <button
-                        className="bg-indigo-500 px-4 rounded-full text-white shadow-xl"
-                        onClick={() => createRoom(scheduledItem.cid)}
-                      >
-                        Get Room Id
-                      </button>
+                      <Button/>
                     </div>
 
                     <div className="flex flex-row justify-between">
@@ -225,6 +221,7 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
                     <p className="text-sm mt-2">
                       Booked on {scheduledDetails[scheduledItem.cid]?.dateOfBooking}
                     </p>
+                    
                   </div>
                 </div>
               )
