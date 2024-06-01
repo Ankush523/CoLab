@@ -25,7 +25,7 @@ const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails)
   const getUploads = async () => {
     try {
       const response = await lighthouse.getUploads(
-        "e76d4258.30b9dad0c8b44f7a9555e177270348c3"
+        "9e89a518.f148c436c7e640248f8fed2574ff5265"
       );
       return response.data.fileList;
     } catch (error) {

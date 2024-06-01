@@ -45,7 +45,7 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
     try {
       const response = await lighthouse.uploadText(
         bookingDetails,
-        "3e9b96bc.15d532c44f924e808c128674a3938b7a",
+        "1ba598c2.68a73ccae51d4af9a08b39a00b02fa69",
         "booking_details"
       );
       console.log("Uploaded booking details CID:", response.data.Hash);
@@ -57,7 +57,7 @@ const Bookings = ({ selectedIssueDetails }: { selectedIssueDetails: any }) => {
   const getUploads = async () => {
     try {
       const response = await lighthouse.getUploads(
-        "3e9b96bc.15d532c44f924e808c128674a3938b7a"
+        "1ba598c2.68a73ccae51d4af9a08b39a00b02fa69"
       );
       return response.data.fileList;
     } catch (error) {
