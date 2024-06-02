@@ -11,6 +11,7 @@ interface IssueDetails {
   issuer: string;
   title: string;
   description: string;
+  attachments?: File[];
   date: string;
 }
 
@@ -22,6 +23,7 @@ const MyIssues: React.FC = () => {
       title: string;
       description: string;
       date: string;
+      attachments?: File[];
       issuerAddr: string;
     }[]
   >([]);
@@ -31,6 +33,7 @@ const MyIssues: React.FC = () => {
   }>({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [issuerAddr, setIssuerAddr] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,6 +48,43 @@ const MyIssues: React.FC = () => {
     } catch (error) {
       console.error("Failed to fetch files:", error);
       return [];
+    }
+  };
+
+  const progressCallback = (progressData: { total: number; uploaded: number }) => {
+    const percentageDone = 100 - Math.round((progressData.uploaded / progressData.total) * 100);
+    console.log(`Upload Progress: ${percentageDone}%`);
+  };
+
+  const uploadFile = async (file: File) => {
+    try {
+      const { signature, signerAddress }: any = await signAuthMessage();
+      if (!signature || !signerAddress) {
+        throw new Error("Failed to sign message");
+      }
+      const output: any = await lighthouse.upload(file, "9e89a518.f148c436c7e640248f8fed2574ff5265", signerAddress, signature, progressCallback);
+      console.log('File Status:', output.data?.Hash);
+      console.log('Visit at https://gateway.lighthouse.storage/ipfs/' + output.data?.Hash);
+      return output.data?.Hash;
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setUploadError('Failed to upload file. Please try again.');
+      throw error;
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      setAttachments([...attachments, ...filesArray]);
+
+      try {
+        for (const file of filesArray) {
+          const cid = await uploadFile(file);
+        }
+      } catch (error) {
+        console.error('Error handling file change:', error);
+      }
     }
   };
 
@@ -270,6 +310,7 @@ const MyIssues: React.FC = () => {
                 className="block w-full mt-1 border border-gray-300 rounded-lg p-2"
               />
             </label>
+            <input className="" type="file" multiple onChange={handleFileChange} />
             <div className="flex justify-end space-x-4">
               <button
                 onClick={handleCloseDialog}
