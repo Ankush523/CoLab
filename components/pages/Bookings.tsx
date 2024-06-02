@@ -5,7 +5,7 @@ import axios from "axios";
 import lighthouse from "@lighthouse-web3/sdk";
 import Image from "next/image";
 import link from "@/images/link.png";
-import Button from "../Buttons";
+import Button from "@/components/Buttons";
 
 interface ScheduledDetails {
   meetAgenda: string;
