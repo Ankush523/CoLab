@@ -1,7 +1,9 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import lighthouse from '@lighthouse-web3/sdk';
-import { useRouter } from 'next/router';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import lighthouse from "@lighthouse-web3/sdk";
+import { useRouter } from "next/router";
+import search from "@/images/search.png";
+import Image from "next/image";
 
 interface ReceivedIssue {
   cid: string;
@@ -15,12 +17,17 @@ interface IssueDetails {
   date: string;
 }
 
-const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails) => void }) => {
+const Home = ({
+  onScheduleMeet,
+}: {
+  onScheduleMeet: (issueDetails: IssueDetails) => void;
+}) => {
   const router = useRouter();
   const [listedIssues, setListedIssues] = useState<ReceivedIssue[]>([]);
   const [listedIssueDetails, setListedIssueDetails] = useState<{
     [key: string]: IssueDetails;
   }>({});
+  const [searchTerm, setSearchTerm] = useState("");
 
   const getUploads = async () => {
     try {
@@ -87,22 +94,45 @@ const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails)
 
   const handleEmailClick = (issuer: string) => {
     router.push({
-      pathname: '/dashboard',
-      query: { to: issuer, tab: 'compose' },
+      pathname: "/dashboard",
+      query: { to: issuer, tab: "compose" },
     });
   };
 
+  const filteredIssues = listedIssues.filter(
+    (issue) =>
+      listedIssueDetails[issue.cid]?.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      listedIssueDetails[issue.cid]?.description
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      listedIssueDetails[issue.cid]?.issuer
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-4">
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-between items-center">
         <h1 className="text-2xl font-semibold m-4 text-purple-700">
           FEATURED ISSUES
         </h1>
+        <div className="flex flex-row bg-white px-4 rounded-lg border border-gray-300 shadow-xl">
+          <Image src={search} alt="search" className="w-6 h-6 mt-2" />
+          <input
+            type="text"
+            placeholder="Search issues..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className=" rounded-lg p-2 ml-4"
+          />
+        </div>
       </div>
 
       <div className="h-[75vh] overflow-y-auto">
         <ul className="">
-          {listedIssues.map(
+          {filteredIssues.map(
             (displayIssue) =>
               listedIssueDetails[displayIssue.cid]?.title &&
               listedIssueDetails[displayIssue.cid]?.description &&
@@ -120,8 +150,8 @@ const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails)
                         Issuer: {listedIssueDetails[displayIssue.cid]?.issuer}
                       </p>
                     </div>
-                    <div className='flex flex-row justify-between'>
-                      <div className='flex flex-col'>
+                    <div className="flex flex-row justify-between">
+                      <div className="flex flex-col">
                         <p className="text-lg">
                           {listedIssueDetails[displayIssue.cid]?.description}
                         </p>
@@ -129,18 +159,25 @@ const Home = ({ onScheduleMeet }: { onScheduleMeet: (issueDetails: IssueDetails)
                           Date: {listedIssueDetails[displayIssue.cid]?.date}
                         </p>
                       </div>
-                      <div className='flex flex-row space-x-2'>
-                      <button
-                        className='border border-white bg-purple-900 hover:bg-purple-500 my-2 px-4 rounded-md text-white shadow-md'
-                        onClick={() => handleEmailClick(listedIssueDetails[displayIssue.cid]?.issuer)}
-                      >
-                        Email
-                      </button>
-                      <button 
-                        className='border border-white bg-purple-900 hover:bg-purple-500 my-2 px-4 rounded-md text-white shadow-md' 
-                        onClick={() => onScheduleMeet(listedIssueDetails[displayIssue.cid])}>
-                        Schedule Meet
-                      </button>
+                      <div className="flex flex-row space-x-2">
+                        <button
+                          className="border border-white bg-purple-900 hover:bg-purple-500 my-2 px-4 rounded-md text-white shadow-md"
+                          onClick={() =>
+                            handleEmailClick(
+                              listedIssueDetails[displayIssue.cid]?.issuer
+                            )
+                          }
+                        >
+                          Email
+                        </button>
+                        <button
+                          className="border border-white bg-purple-900 hover:bg-purple-500 my-2 px-4 rounded-md text-white shadow-md"
+                          onClick={() =>
+                            onScheduleMeet(listedIssueDetails[displayIssue.cid])
+                          }
+                        >
+                          Schedule Meet
+                        </button>
                       </div>
                     </div>
                   </div>
