@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import ComposeMail from '@/components/pages/mails/composemail';
-import MailList from '@/components/pages/mails/maillist'
-import ReceivedFiles from '@/components/pages/mails/receivedmails';
+import ComposeMail from '@/components/elements/mails/composemail';
+import MailList from '@/components/elements/mails/maillist'
+import ReceivedFiles from '@/components/elements/mails/receivedmails';
 import { useRouter } from 'next/router';
 
 interface Mail {

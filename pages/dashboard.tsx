@@ -11,12 +11,12 @@ import bookings from "@/images/bookings.png";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 // Import the page components
-import Home from "@/components/pages/home";
-import MyIssues from "@/components/pages/myissues";
-import Mails from "@/components/pages/mails/mails";
-import Rewards from "@/components/pages/rewards";
-import Profile from "@/components/pages/profile";
-import Bookings from "@/components/pages/bookings";
+import Home from "@/components/elements/home";
+import MyIssues from "@/components/elements/myissues";
+import Mails from "@/components/elements/mails/mails";
+import Rewards from "@/components/elements/rewards";
+import Profile from "@/components/elements/profile";
+import Bookings from "@/components/elements/bookings";
 
 // Define the type for page names
 type PageName = "Home" | "My Issues" | "Mails" | "Bookings" | "Rewards" | "Profile";
