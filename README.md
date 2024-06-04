@@ -1,3 +1,37 @@
+## About the Project
+
+CoLab connects developers to collaboratively solve project issues. List your code issues, and fellow developers can assist via virtual meet rooms with a shared code editor. Communicate through mailing service and earn NFTs for successfully resolving issues.
+
+## Project Description
+
+CoLab is a collaborative platform designed to bring developers together to solve coding and project-related issues in a decentralized and efficient manner. Our platform allows developers facing challenges to list their issues, while other developers can browse, engage, and collaboratively work towards solutions. CoLab combines decentralized communication, scheduling capabilities, and a shared coding environment to create a seamless problem-solving experience.
+
+Key Features:
+
+- Issue Listing and Browsing: Developers can post detailed descriptions of the issues they are facing in their code or projects.
+
+- Decentralized Communication: Integrated decentralized mailing service allows for secure and private communication between developers. Users can send messages, share code snippets, and discuss solutions without leaving the platform.
+
+- Scheduling and Meeting: Developers can schedule calls directly through the platform, selecting convenient times for both parties. Integration with calendar services to send reminders and updates about scheduled meetings.
+
+- Collaborative Problem-Solving: In-meeting shared editor where developers can collaboratively write, debug, and test code in real-time. Support for multiple programming languages and real-time synchronization to ensure a smooth collaborative experience. Video and audio call integration within the meeting room to facilitate effective communication.
+
+## How it's made
+
+This project utilizes a handful of services provided by Filecoin, Huddle01 and ENS within itself to implement the following functionalities:
+
+- The details of the issues faced by a developer are being stored in Lighthouse storage toolkit. Its uploadText, uploadFile and getUploads functions are used extensively to push and fetch relevant details. The files uploaded in Lighthouse are encrypted and signed before uploading to ensure privacy
+
+- The mailing service ensures smooth communication among the users. All mails are stored in lighthouse storage and it also supports the extensive usage of ENS names within it. Users don't need to type out EOA hex addresses anymore. They can just give out the ENS name to which the mail needs to be sent.
+
+- Developers around the globe can view all the listed issue faced by fellow developers. They can view and solve the issue and try mailing out the solution to the issue creator or even schedule a meet with him/her to engage in detailed discussions.
+
+- Personalised meet rooms are created with the help of Huddle01 based on the scheduled date and time which the users can join at just one click.
+
+- The issue creator after successful solving of the problem can mint an NFT for the issue solver who helped out.
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
