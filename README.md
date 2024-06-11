@@ -14,7 +14,7 @@ Key Features:
 
 - Scheduling and Meeting: Developers can schedule calls directly through the platform, selecting convenient times for both parties. Integration with calendar services to send reminders and updates about scheduled meetings.
 
-- Collaborative Problem-Solving: In-meeting shared editor where developers can collaboratively write, debug, and test code in real-time. Support for multiple programming languages and real-time synchronization to ensure a smooth collaborative experience. Video and audio call integration within the meeting room to facilitate effective communication.
+- Collaborative Problem-Solving: In-meeting shared editor through which developers can collaboratively write, debug, and test code in real-time. Support for multiple programming languages and real-time synchronization to ensure a smooth collaborative experience. Video and audio call integration within the meeting room to facilitate effective communication.
 
 ## How it's made
 
